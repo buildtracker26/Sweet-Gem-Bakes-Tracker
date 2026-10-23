@@ -1,0 +1,425 @@
+<!-- === CHUNK 1 START: HEAD, STYLES & GOOGLE LIBRARIES === -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Gem Bakes — Tracker</title>
+    
+    <script async defer src="https://google.com" onload="gapiLoaded()"></script>
+    <script async defer src="https://google.com" onload="gisLoaded()"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fffaf7; margin: 0; padding: 32px; color: #4a3b32; }
+        .app-title { font-size: 1.85rem; font-weight: 800; color: #ff6b8b; margin-bottom: 4px; letter-spacing: -0.01em; }
+        .app-subtitle { font-size: 0.95rem; color: #8c7365; margin-bottom: 24px; font-weight: 500; }
+        .card-panel { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 107, 139, 0.08); padding: 28px; margin-bottom: 32px; border: 1px solid #ffe3e8; }
+        .panel-heading { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #ff6b8b; margin-bottom: 16px; }
+        .form-row { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
+        .field-box { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 140px; }
+        .field-box label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #8c7365; letter-spacing: 0.04em; }
+        .field-box input { height: 44px; padding: 0 14px; border: 2px solid #ffd0d9; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; color: #4a3b32; width: 100%; background-color: #fff; transition: border-color 0.2s; }
+        .field-box input:focus { border-color: #ff6b8b; outline: none; }
+        .add-btn { background-color: #ff6b8b; color: #ffffff; border: none; height: 44px; padding: 0 28px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; white-space: nowrap; transition: background-color 0.2s; }
+        .add-btn:hover { background-color: #ff4f73; }
+        .board-container { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); background: #ffffff; margin-bottom: 32px; border: 2px solid #ffd0d9; }
+        .board-header { background-color: #ff8fa5; color: #ffffff; padding: 16px 20px; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.02em; display: flex; justify-content: space-between; align-items: center; }
+        .board-nav-btn { background: #ff6b8b; color: #ffffff; border: 1px solid #ffb3c1; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; margin-left: 6px; font-weight: bold; }
+        .board-nav-btn:hover { background: #ff4f73; }
+        .tracker-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .tracker-table th { background-color: #fff0f3; color: #8c7365; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 14px 20px; border-bottom: 2px solid #ffd0d9; }
+        .tracker-table td { padding: 16px 20px; font-size: 0.95rem; color: #4a3b32; border-bottom: 1px solid #fff0f3; }
+        .subtotal-row { background-color: #fffaf7; font-weight: 700; border-top: 2px solid #ffd0d9; }
+        .subtotal-row td { padding: 14px 20px; font-size: 0.9rem; color: #4a3b32; }
+        .profit-good { color: #10b981 !important; font-weight: 600; }
+        .profit-bad { color: #ef4444 !important; font-weight: 600; }
+        .amend-action-btn { background-color: #fff0f3; color: #ff6b8b; border: 1px solid #ffd0d9; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; margin-right: 6px; }
+        .amend-action-btn:hover { background-color: #ffd0d9; }
+        .delete-action-btn { background-color: #fff5f5; color: #ef4444; border: 1px solid #fee2e2; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; margin-right: 6px; }
+        .delete-action-btn:hover { background-color: #fee2e2; }
+        .inline-edit-input { width: 90%; padding: 4px 8px; border: 2px solid #ff8fa5; border-radius: 6px; font-size: 0.9rem; color: #4a3b32; }
+        .footer-banner { background-color: #4a3b32; color: #ffffff; border-radius: 12px; padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 24px rgba(74, 59, 50, 0.15); margin-top: 40px; }
+        .footer-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid #6b5547; padding-bottom: 14px; }
+        .banner-label { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.06em; color: #ffd0d9; }
+        .global-alignment-row { display: flex; width: 100%; align-items: center; box-sizing: border-box; flex-wrap: wrap; gap: 16px; }
+        .global-cell { font-size: 1.3rem; font-weight: 800; box-sizing: border-box; color: #f3f4f6; flex: 1; min-width: 120px; }
+        .global-cell label { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #c4b4ab; letter-spacing: 0.05em; margin-bottom: 4px; }
+        .total-amount-good { color: #a3be8c !important; }
+        .total-amount-bad { color: #f28b8b !important; }
+        .export-btn { background-color: #ff6b8b; color: #ffffff; border: 1px solid #ffb3c1; height: 44px; padding: 0 24px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background-color 0.2s; }
+        .export-btn:hover { background-color: #ff4f73; }
+        .startup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(74, 59, 50, 0.85); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .startup-box { background: white; padding: 40px; border-radius: 16px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 20px 32px rgba(0,0,0,0.15); border: 2px solid #ffd0d9; }
+        .startup-box h3 { margin-top: 0; color: #4a3b32; font-size: 1.4rem; margin-bottom: 20px; }
+        .startup-btns { display: flex; gap: 16px; justify-content: center; margin-top: 20px; }
+        .modal-btn { padding: 12px 30px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .btn-yes { background-color: #ff6b8b; color: #ffffff; }
+        .btn-no { background-color: #f5efe3; color: #8c7365; }
+        .file-upload-zone { margin-top: 20px; border: 2px dashed #ffd0d9; padding: 24px; border-radius: 8px; background-color: #fffaf7; }
+        .hidden-pane { display: none !important; }
+        .tab-btn { background-color: #f5efe3; color: #8c7365; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+        .tab-btn.active { background-color: #ff6b8b; color: #ffffff; }
+    </style>
+</head>
+<!-- === CHUNK 1 END === -->
+<!-- === CHUNK 2 START: HTML BODY, NAVIGATION AND LAYOUT PANELS === -->
+<body>
+<div id="startupPrompt" class="startup-overlay">
+    <div class="startup-box">
+        <h3 id="promptTitleText">Do you want to load up previous baking data?</h3>
+        <div class="startup-btns" id="promptOptionsRow">
+            <button class="modal-btn btn-yes" id="loadYesBtn">Yes</button>
+            <button class="modal-btn btn-no" id="loadNoBtn">No</button>
+        </div>
+        <div id="uploadZone" class="file-upload-zone hidden-pane">
+            <label style="display:block; font-size:0.75rem; font-weight:700; color:#4a3b32; margin-bottom:12px; text-transform:uppercase;">Select master backup CSV file</label>
+            <input type="file" id="csvFileInput" accept=".csv" style="font-size:0.9rem;">
+        </div>
+    </div>
+</div>
+
+<div class="app-title">Sweet Gem Bakes</div>
+<div class="app-subtitle">Cookie Order & Profit Tracking Dashboard</div>
+
+<div style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid #ffd0d9; padding-bottom: 12px;">
+    <button id="tabOrdersBtn" class="tab-btn active">🍪 Orders</button>
+    <button id="tabIngredientsBtn" class="tab-btn">🌾 Ingredients Required for Bakes</button>
+</div>
+
+<div id="viewOrdersContainer">
+    <div class="card-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="panel-heading" style="margin: 0;">Log New Cookie Order</div>
+            <button class="export-btn" id="exportMasterCsvBtn" style="height: 36px; padding: 0 16px; font-size: 0.85rem;">💾 Export All Data to Google Drive</button>
+        </div>
+        <div class="form-row">
+            <div class="field-box" style="flex: 1.2;"><label>Date</label><input type="date" id="expDate" value="2026-09-29"></div>
+            <div class="field-box" style="flex: 2.2;"><label>Batch / Customer</label><input type="text" id="expGroup" placeholder="e.g. Batch #4 - Local Fair"></div>
+            <div class="field-box" style="flex: 1.8;"><label>Cookie / Bun Type</label><input type="text" id="expItem" placeholder="e.g. Chocolate Chip"></div>
+            <div class="field-box"><label>No. Required</label><input type="number" id="expBudget" placeholder="0" step="1"></div>
+            <div class="field-box"><label>Cost per item (£)</label><input type="number" id="expEstimated" placeholder="0.00" step="0.01"></div>
+            <button class="add-btn" id="addExpenseBtn">Add Entry</button>
+        </div>
+    </div>
+    <div id="boardsContainer"></div>
+</div>
+
+<div id="viewIngredientsContainer" class="hidden-pane">
+    <div class="card-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="panel-heading" style="margin: 0;">Log Required Ingredient / Recipe Metric</div>
+            <span style="font-size: 0.85rem; color: #8c7365;">Backup is managed from the Orders tab button</span>
+        </div>
+        <div class="form-row">
+            <div class="field-box" style="flex: 1.2;"><label>Date</label><input type="date" id="ingDate" value="2026-09-29"></div>
+            <div class="field-box" style="flex: 1.5;"><label>Bake Type</label><input type="text" id="ingBakeType" placeholder="e.g. Birthday Cake"></div>
+            <div class="field-box" style="flex: 1.8;"><label>Ingredient</label><input type="text" id="ingName" placeholder="e.g. Unsalted Butter"></div>
+            <div class="field-box" style="flex: 1.2;"><label>Quantity Required</label><input type="text" id="ingQty" placeholder="e.g. 500g"></div>
+            <div class="field-box" style="flex: 1.5;"><label>Cost per gram (£)</label><input type="number" id="ingCost" placeholder="0.00" step="0.0001"></div>
+            <button class="add-btn" id="addIngredientBtn">Add Ingredient</button>
+        </div>
+    </div>
+    <div id="ingredientsBoardsContainer"></div>
+</div>
+
+<div class="footer-banner">
+    <div class="footer-top-row">
+        <div class="banner-label">BUSINESS GRAND TOTALS</div>
+    </div>
+    <div class="global-alignment-row">
+        <div class="global-cell" style="flex: 1.5;"><label>Total Order Pipeline Volume</label><span id="globalActualVal">£0.00</span></div>
+    </div>
+</div>
+<!-- === CHUNK 2 END === -->
+<!-- === CHUNK 3 START: GOOGLE DRIVE AUTHORIZATION & DATA BACKUP ENGINE === -->
+<script>
+    const CLIENT_ID = 'YOUR_CLIENT_ID';
+    const API_KEY = 'YOUR_API_KEY';
+    const SCOPES = 'https://googleapis.com';
+
+    let gapiInited = false;
+    let gisInited = false;
+    let tokenClient;
+
+    function gapiLoaded() { gapi.load('client', initializeGapiClient); }
+    async function initializeGapiClient() {
+        await gapi.client.init({ apiKey: API_KEY, discoveryDocs: ['https://googleapis.com'] });
+        gapiInited = true;
+    }
+    function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({ client_id: CLIENT_ID, scope: SCOPES, callback: '' });
+        gisInited = true;
+    }
+
+    const tabOrdersBtn = document.getElementById('tabOrdersBtn');
+    const tabIngredientsBtn = document.getElementById('tabIngredientsBtn');
+    const viewOrdersContainer = document.getElementById('viewOrdersContainer');
+    const viewIngredientsContainer = document.getElementById('viewIngredientsContainer');
+
+    tabOrdersBtn.addEventListener('click', function() {
+        viewOrdersContainer.classList.remove('hidden-pane');
+        viewIngredientsContainer.classList.add('hidden-pane');
+        tabOrdersBtn.classList.add('active');
+        tabIngredientsBtn.classList.remove('active');
+    });
+
+    tabIngredientsBtn.addEventListener('click', function() {
+        viewIngredientsContainer.classList.remove('hidden-pane');
+        viewOrdersContainer.classList.add('hidden-pane');
+        tabIngredientsBtn.classList.add('active');
+        tabOrdersBtn.classList.remove('active');
+    });
+
+    document.getElementById('loadNoBtn').addEventListener('click', function() {
+        document.getElementById('startupPrompt').remove();
+    });
+    document.getElementById('loadYesBtn').addEventListener('click', function() {
+        document.getElementById('promptOptionsRow').classList.add('hidden-pane');
+        document.getElementById('promptTitleText').textContent = "Upload Master Backup CSV File";
+        document.getElementById('uploadZone').classList.remove('hidden-pane');
+    });
+
+    async function uploadCsvToDrive(csvDataContent) {
+        if (gapi.client.getToken() === null) {
+            tokenClient.callback = async (resp) => {
+                if (resp.error !== undefined) throw (resp);
+                await executeDriveSave(csvDataContent);
+            };
+            tokenClient.requestAccessToken({ prompt: 'consent' });
+        } else {
+            await executeDriveSave(csvDataContent);
+        }
+    }
+
+    async function executeDriveSave(content) {
+        const metadata = { name: 'sweet_gem_bakes_master_backup.csv', mimeType: 'text/csv' };
+        const blob = new Blob([content], { type: 'text/csv' });
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', blob);
+
+        try {
+            const response = await fetch('https://googleapis.com', {
+                method: 'POST',
+                headers: new Headers({ 'Authorization': 'Bearer ' + gapi.client.getToken().access_token }),
+                body: form
+            });
+            if (response.ok) { alert('Saved directly to your Google Drive account!'); }
+            else { alert('Upload verification failed.'); }
+        } catch (err) { alert('Drive communication error.'); }
+    }
+
+    document.getElementById('exportMasterCsvBtn').addEventListener('click', function() {
+        if (!gapiInited || !gisInited) { alert('Google Client API components are initializing...'); return; }
+        var csvLines = ["RECORD_TYPE,FieldA,FieldB,FieldC,FieldD,FieldE,FieldF"];
+        
+        document.querySelectorAll('#boardsContainer .board-container tbody tr').forEach(function(tr) {
+            var batchGroup = tr.closest('.board-container').querySelector('.board-header span').textContent;
+            var cells = tr.querySelectorAll('td');
+            if (cells.length >= 7) {
+                csvLines.push('ORDER,"' + batchGroup.replace(/"/g, '""') + '","' + cells[1].textContent + '","' + cells[2].textContent.replace(/"/g, '""') + '",' + cells[3].textContent + ',' + cells[4].textContent.replace('£','') + ',' + cells[5].textContent.replace('£',''));
+            }
+        });
+        
+        document.querySelectorAll('#ingredientsBoardsContainer .board-container').forEach(function(board) {
+            var bakeType = board.querySelector('.board-header span').textContent;
+            var sellPrice = board.querySelector('.master-sell-display').textContent.replace('£', '');
+            csvLines.push('ING_HEADER,"' + bakeType.replace(/"/g, '""') + '",' + sellPrice);
+            board.querySelectorAll('tbody tr').forEach(function(tr) {
+                var cells = tr.querySelectorAll('td');
+                if (cells.length >= 6) {
+                    csvLines.push('ING_ROW,"' + bakeType.replace(/"/g, '""') + '","' + cells[0].textContent + '","' + cells[1].textContent.replace(/"/g, '""') + '","' + cells[2].textContent.replace(/"/g, '""') + '",' + cells[3].textContent.replace('£','') + ',' + cells[4].textContent.replace('£',''));
+                }
+            });
+        });
+
+        uploadCsvToDrive(csvLines.join('\n'));
+    });
+
+    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+        var selectedFiles = e.target.files; if (!selectedFiles || selectedFiles.length === 0) return;
+        var fileReader = new FileReader();
+        fileReader.onload = function(evt) {
+            var rawTextLines = evt.target.result.split('\n');
+            Array.from(rawTextLines).forEach(function(lineText) {
+                if (!lineText.trim()) return;
+                var columns = lineText.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lineText.split(','); if (!columns || columns.length < 2) return;
+                var typeKey = columns[0].trim(); var cleanCols = columns.map(function(c) { return c.replace(/^"|"$/g, '').trim(); });
+                if (typeKey === 'ORDER') {
+                    document.getElementById('expGroup').value = cleanCols[1]; document.getElementById('expDate').value = cleanCols[2]; document.getElementById('expItem').value = cleanCols[3]; document.getElementById('expBudget').value = cleanCols[4]; document.getElementById('expEstimated').value = cleanCols[5];
+                    document.getElementById('addExpenseBtn').click();
+                }
+            });
+            document.getElementById('startupPrompt').remove();
+        };
+        fileReader.readAsText(selectedFiles[0]);
+    });
+
+    function recalculateBoardTotals(targetBoardElement) {
+        var actualNodes = targetBoardElement.querySelectorAll('.live-actual-cell');
+        var totalActual = Array.from(actualNodes).reduce(function(sum, node) { return sum + parseFloat(node.textContent || 0); }, 0);
+        var totalCostContainer = targetBoardElement.querySelector('.subtotal-actual-val');
+        if (totalCostContainer) totalCostContainer.textContent = '£' + totalActual.toFixed(2);
+        var totalBudget = Array.from(targetBoardElement.querySelectorAll('.board-table-body .live-budget-cell')).reduce(function(sum, node) { return sum + parseFloat(node.textContent || 0); }, 0);
+        var budgetContainer = targetBoardElement.querySelector('.subtotal-budget-val');
+        if (budgetContainer) budgetContainer.textContent = '£' + totalBudget.toFixed(2);
+    }
+</script>
+<!-- === CHUNK 3 END === -->
+<!-- === CHUNK 4 START: CHRONOLOGICAL ROW SORTING & LIVE ORDERS LOGGER === -->
+<script>
+    function sortBoardRowsChronologically(tableBody) {
+        var rowsArray = Array.from(tableBody.querySelectorAll('tr'));
+        rowsArray.sort(function(rowA, rowB) {
+            var cellsA = rowA.querySelectorAll('td'); var cellsB = rowB.querySelectorAll('td'); if (cellsA.length < 3 || cellsB.length < 3) return 0;
+            var dateCellA = cellsA[1]; var dateCellB = cellsB[1];
+            var dateInputA = dateCellA.querySelector('input[type="date"]'); var dateStrA = dateInputA ? dateInputA.value : dateCellA.textContent.trim();
+            var dateInputB = dateCellB.querySelector('input[type="date"]'); var dateStrB = dateInputB ? dateInputB.value : dateCellB.textContent.trim();
+            var valA = dateStrA ? new Date(dateStrA).getTime() : 0; var valB = dateStrB ? new Date(dateStrB).getTime() : 0; return valA - valB;
+        });
+        rowsArray.forEach(function(sortedRow) { tableBody.appendChild(sortedRow); });
+    }
+
+    document.getElementById('addExpenseBtn').addEventListener('click', function() {
+        var dInput = document.getElementById('expDate'); var gInput = document.getElementById('expGroup'); var iInput = document.getElementById('expItem'); var bInput = document.getElementById('expBudget'); var eInput = document.getElementById('expEstimated');
+        if (!gInput.value.trim() || !iInput.value.trim()) return;
+        
+        var groupName = gInput.value.trim(); var categoryId = 'board-' + groupName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        var requiredCount = parseInt(bInput.value || 0); var costPerItemVal = parseFloat(eInput.value || 0);
+        var computedTotalCostVal = requiredCount * costPerItemVal;
+        
+        var targetBoard = document.getElementById(categoryId);
+        if (!targetBoard) {
+            targetBoard = document.createElement('div'); targetBoard.className = 'board-container'; targetBoard.id = categoryId;
+            targetBoard.innerHTML = '<div class="board-header"><span>' + groupName + '</span><div><button class="board-nav-btn move-up-btn">▲ Move Up</button><button class="board-nav-btn move-down-btn">▼ Move Down</button></div></div><table class="tracker-table"><thead><tr><th style="width: 5%;">Done</th><th style="width: 15%;">Date</th><th style="width: 28%;">Cookie / Bun Type</th><th style="width: 14%;">No. Required</th><th style="width: 14%;">Cost per item</th><th style="width: 14%;">Total Cost</th><th style="width: 10%;">Action</th></tr></thead><tbody class="board-table-body"></tbody><tfoot><tr class="subtotal-row"><td colspan="5" style="text-align: right; color: #8c7365; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Cost:</td><td class="subtotal-actual-val">£0.00</td><td></td></tr></tfoot></table>';
+            targetBoard.querySelector('.move-up-btn').addEventListener('click', function() { var prev = targetBoard.previousElementSibling; if (prev) { targetBoard.parentNode.insertBefore(targetBoard, prev); } });
+            targetBoard.querySelector('.move-down-btn').addEventListener('click', function() { var next = targetBoard.nextElementSibling; if (next) { targetBoard.parentNode.insertBefore(next, targetBoard); } });
+            document.getElementById('boardsContainer').appendChild(targetBoard);
+        }
+        var tbody = targetBoard.querySelector('.board-table-body'); var row = document.createElement('tr');
+        row.innerHTML = '<td style="text-align:center;"><input type="checkbox" class="task-status-chk" style="transform: scale(1.2); cursor: pointer;"></td><td>' + dInput.value + '</td><td>' + iInput.value.trim() + '</td><td><span class="live-budget-cell">' + requiredCount + '</span></td><td>£<span class="live-estimated-cell">' + costPerItemVal.toFixed(2) + '</span></td><td>£<span class="live-actual-cell">' + computedTotalCostVal.toFixed(2) + '</span></td><td><button class="amend-action-btn">Amend</button><button class="delete-action-btn">Delete</button></td>';
+        
+        row.querySelector('.amend-action-btn').addEventListener('click', function(event) {
+            var btn = event.target; var cells = row.querySelectorAll('td'); var iter = Array.from(cells).values();
+            var statusTd = iter.next().value; var dT = iter.next().value; var iT = iter.next().value; var bT = iter.next().value; var eT = iter.next().value; var aT = iter.next().value;
+            if (btn.textContent === 'Amend') {
+                btn.textContent = 'Save'; btn.style.backgroundColor = '#ff6b8b'; btn.style.color = '#ffffff';
+                dT.innerHTML = '<input type="date" class="inline-edit-input" value="' + dT.textContent + '">';
+                iT.innerHTML = '<input type="text" class="inline-edit-input" value="' + iT.textContent + '">';
+                bT.innerHTML = '<input type="number" class="inline-edit-input" value="' + bT.querySelector('.live-budget-cell').textContent + '">';
+                eT.innerHTML = '<input type="number" class="inline-edit-input" step="0.01" value="' + eT.querySelector('.live-estimated-cell').textContent + '">';
+            } else {
+                btn.textContent = 'Amend'; btn.style.backgroundColor = '#fff0f3'; btn.style.color = '#ff6b8b';
+                var nD = dT.querySelector('input').value; var nI = iT.querySelector('input').value.trim(); var nB = parseInt(bT.querySelector('input').value || 0); var nE = parseFloat(eT.querySelector('input').value || 0);
+                var nA = nB * nE;
+                dT.textContent = nD; iT.textContent = nI;
+                bT.innerHTML = '<span class="live-budget-cell">' + nB + '</span>'; eT.innerHTML = '£<span class="live-estimated-cell">' + nE.toFixed(2) + '</span>'; aT.innerHTML = '£<span class="live-actual-cell">' + nA.toFixed(2) + '</span>';
+                sortBoardRowsChronologically(tbody); recalculateBoardTotals(targetBoard); recalculateGlobalSpend();
+            }
+        });
+        row.querySelector('.delete-action-btn').addEventListener('click', function() { row.remove(); recalculateBoardTotals(targetBoard); recalculateGlobalSpend(); if (tbody.children.length === 0) { targetBoard.remove(); } });
+        tbody.appendChild(row); sortBoardRowsChronologically(tbody); recalculateBoardTotals(targetBoard); recalculateGlobalSpend();
+        bInput.value = ''; eInput.value = '';
+    });
+</script>
+<!-- === CHUNK 4 END === -->
+<!-- === CHUNK 5 START: INGREDIENTS RECIPE ENGINE & FILE CLOSURE === -->
+<script>
+    function recalculateIngredientBoardProfit(boardElement) {
+        var displaySpan = boardElement.querySelector('.master-sell-display');
+        var currentSellPrice = 0;
+        if (displaySpan) {
+            var inputEl = displaySpan.querySelector('input');
+            currentSellPrice = inputEl ? parseFloat(inputEl.value || 0) : parseFloat(displaySpan.textContent.replace('£', '') || 0);
+        }
+        var budgetNodes = boardElement.querySelectorAll('.live-budget-cell');
+        var totalCost = Array.from(budgetNodes).reduce(function(sum, node) { return sum + parseFloat(node.textContent || 0); }, 0);
+        var calculatedProfit = currentSellPrice - totalCost;
+        var profitSpan = boardElement.querySelector('.master-profit-display');
+        if (profitSpan) {
+            profitSpan.textContent = '£' + calculatedProfit.toFixed(2);
+            if (calculatedProfit >= 0) { profitSpan.style.color = '#2ee59d'; } 
+            else { profitSpan.style.color = '#ff4d4d'; }
+        }
+    }
+
+    document.getElementById('addIngredientBtn').addEventListener('click', function() {
+        var dInput = document.getElementById('ingDate'); var bInput = document.getElementById('ingBakeType'); var iInput = document.getElementById('ingName'); var qInput = document.getElementById('ingQty'); var cInput = document.getElementById('ingCost');
+        if (!bInput.value.trim() || !iInput.value.trim()) return;
+        
+        var bakeType = bInput.value.trim(); var categoryId = 'ing-board-' + bakeType.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        var costPerGramVal = parseFloat(cInput.value || 0);
+        var qtyNumericVal = parseFloat(qInput.value.replace(/[^0-9.]/g, '') || 0);
+        var totalIngredientCostVal = qtyNumericVal * costPerGramVal;
+        
+        var targetBoard = document.getElementById(categoryId);
+        if (!targetBoard) {
+            targetBoard = document.createElement('div'); targetBoard.className = 'board-container'; targetBoard.id = categoryId;
+            targetBoard.innerHTML = '<div class="board-header" style="display:flex; justify-content:space-between; align-items:center;">' +
+                '<div style="display:flex; align-items:center; gap:16px;">' +
+                '<span style="font-weight:800; font-size:1.2rem;">' + bakeType + '</span>' +
+                '<div class="header-price-zone" style="font-size:0.85rem; color:#fff5f7; display:flex; align-items:center; gap:16px; font-weight:700;">' +
+                '<span>SELL PRICE: <span class="master-sell-display" style="color:#ffffff; background:rgba(0,0,0,0.2); padding:3px 8px; border-radius:4px; font-size:0.95rem; margin-left:4px;">£0.00</span></span>' +
+                '<span>PROFIT: <span class="master-profit-display" style="color:#2ee59d; background:rgba(0,0,0,0.2); padding:3px 8px; border-radius:4px; font-size:0.95rem; margin-left:4px;">£0.00</span></span>' +
+                '<button class="board-nav-btn amend-header-price-btn" style="margin:0; padding:4px 10px; font-size:0.75rem; background:#4a3b32; color:#ffffff; border:1px solid #ffd0d9; border-radius:6px; cursor:pointer;">Amend</button></div></div>' +
+                '<div><button class="board-nav-btn move-up-btn">▲ Move Up</button><button class="board-nav-btn move-down-btn">▼ Move Down</button></div></div>' +
+                '<table class="tracker-table"><thead><tr><th style="width: 12%;">Date</th><th style="width: 26%;">Ingredient</th><th style="width: 16%;">Quantity</th><th style="width: 16%;">Cost per gram</th><th style="width: 16%;">Ingredient Cost</th><th style="width: 14%;">Action</th></tr></thead><tbody class="board-table-body"></tbody><tfoot><tr class="subtotal-row"><td colspan="4" style="text-align: right; color: #8c7365; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Cost:</td><td class="subtotal-budget-val">£0.00</td><td></td></tr></tfoot></table>';
+            
+            targetBoard.querySelector('.amend-header-price-btn').addEventListener('click', function(e) {
+                var btn = e.target; var displaySpan = targetBoard.querySelector('.master-sell-display');
+                if (btn.textContent === 'Amend') {
+                    btn.textContent = 'Save'; btn.style.backgroundColor = '#10b981';
+                    var currentPriceStr = displaySpan.textContent.replace('£', '');
+                    displaySpan.innerHTML = '<input type="number" class="inline-edit-input" step="0.01" style="width:70px; height:24px; padding:0 4px; border:2px solid #ff6b8b; border-radius:4px; color:#4a3b32;" value="' + currentPriceStr + '">';
+                } else {
+                    btn.textContent = 'Amend'; btn.style.backgroundColor = '#4a3b32';
+                    var inputEl = displaySpan.querySelector('input'); var newPriceVal = parseFloat(inputEl.value || 0);
+                    displaySpan.textContent = '£' + newPriceVal.toFixed(2); recalculateIngredientBoardProfit(targetBoard);
+                }
+            });
+            targetBoard.querySelector('.move-up-btn').addEventListener('click', function() { var prev = targetBoard.previousElementSibling; if (prev) { targetBoard.parentNode.insertBefore(targetBoard, prev); } });
+            targetBoard.querySelector('.move-down-btn').addEventListener('click', function() { var next = targetBoard.nextElementSibling; if (next) { targetBoard.parentNode.insertBefore(next, targetBoard); } });
+            document.getElementById('ingredientsBoardsContainer').appendChild(targetBoard);
+        }
+        
+        var tbody = targetBoard.querySelector('.board-table-body'); var row = document.createElement('tr');
+        row.innerHTML = '<td>' + dInput.value + '</td><td>' + iInput.value.trim() + '</td><td>' + qInput.value.trim() + '</td><td>£<span>' + costPerGramVal.toFixed(4) + '</span></td><td>£<span class="live-budget-cell">' + totalIngredientCostVal.toFixed(2) + '</span></td><td><button class="amend-action-btn">Amend</button><button class="delete-action-btn">Delete</button></td>';
+        
+        row.querySelector('.amend-action-btn').addEventListener('click', function(event) {
+            var btn = event.target; var cells = row.querySelectorAll('td'); var iter = Array.from(cells).values();
+            var dT = iter.next().value; var iT = iter.next().value; var qT = iter.next().value; var cT = iter.next().value; var icT = iter.next().value;
+            if (btn.textContent === 'Amend') {
+                btn.textContent = 'Save'; btn.style.backgroundColor = '#ff6b8b'; btn.style.color = '#ffffff';
+                dT.innerHTML = '<input type="date" class="inline-edit-input" value="' + dT.textContent + '">';
+                iT.innerHTML = '<input type="text" class="inline-edit-input" value="' + iT.textContent + '">';
+                qT.innerHTML = '<input type="text" class="inline-edit-input" value="' + qT.textContent + '">';
+                cT.innerHTML = '<input type="number" class="inline-edit-input" step="0.0001" value="' + cT.querySelector('span').textContent + '">';
+            } else {
+                btn.textContent = 'Amend'; btn.style.backgroundColor = '#fff0f3'; btn.style.color = '#ff6b8b';
+                var nD = dT.querySelector('input').value; var nI = iT.querySelector('input').value.trim(); var nQ = qT.querySelector('input').value.trim(); var nC = parseFloat(cT.querySelector('input').value || 0);
+                var nQNum = parseFloat(nQ.replace(/[^0-9.]/g, '') || 0); var nIC = nQNum * nC;
+                dT.textContent = nD; iT.textContent = nI; qT.textContent = nQ;
+                cT.innerHTML = '£<span>' + nC.toFixed(4) + '</span>'; icT.innerHTML = '£<span class="live-budget-cell">' + nIC.toFixed(2) + '</span>';
+                recalculateIngredientBoardTotals(targetBoard); recalculateIngredientBoardProfit(targetBoard);
+            }
+        });
+        row.querySelector('.delete-action-btn').addEventListener('click', function() { row.remove(); recalculateIngredientBoardTotals(targetBoard); recalculateIngredientBoardProfit(targetBoard); if (tbody.children.length === 0) { targetBoard.remove(); } });
+        tbody.appendChild(row); recalculateIngredientBoardTotals(targetBoard); recalculateIngredientBoardProfit(targetBoard);
+    });
+
+    function recalculateIngredientBoardTotals(boardElement) {
+        var costNodes = boardElement.querySelectorAll('.live-budget-cell');
+        var totalCost = Array.from(costNodes).reduce(function(sum, node) { return sum + parseFloat(node.textContent || 0); }, 0);
+        var subtotalVal = boardElement.querySelector('.subtotal-budget-val');
+        if (subtotalVal) subtotalVal.textContent = '£' + totalCost.toFixed(2);
+    }
+
+    function recalculateGlobalSpend() {
+        var actualNodes = document.querySelectorAll('#boardsContainer .live-actual-cell');
+        var globalTotal = Array.from(actualNodes).reduce(function(sum, node) { return sum + parseFloat(node.textContent || 0); }, 0);
+        var targetContainer = document.getElementById('globalActualVal');
+        if (targetContainer) targetContainer.textContent = '£' + globalTotal.toFixed(2);
+    }
+</script>
+</body>
+</html>
+<!-- === CHUNK 5 END === -->
